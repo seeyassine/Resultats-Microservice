@@ -8,4 +8,7 @@ router.get('/', resultatsController.listerResultats);
 router.get('/:id', resultatsController.getResultatById);
 router.put('/:id', resultatsController.modifierResultat);
 router.delete('/:id', resultatsController.supprimerResultat);
+// Route pour récupérer les résultats par série
+router.get('/serie/:serie', resultatsController.getResultatBySerie);
+
 module.exports = router;

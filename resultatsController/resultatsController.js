@@ -56,6 +56,7 @@ exports.modifierResultat = async (req, res) => {
     }
 };
 
+
 // Supprimer un résultat
 exports.supprimerResultat = async (req, res) => {
     const { id } = req.params;
@@ -65,6 +66,22 @@ exports.supprimerResultat = async (req, res) => {
             return res.status(404).json({ error: "Résultat non trouvé" });
         }
         res.status(200).json({ message: "Résultat supprimé avec succès" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+// Récupérer un résultat par Serie
+exports.getResultatBySerie = async (req, res) => {
+    const { serie } = req.params;
+
+    try {
+        const [result] = await db.execute("SELECT * FROM Resultat WHERE serie = ?", [serie]);
+        if (result.length === 0) {
+            return res.status(404).json({ error: "Résultat non trouvé" });
+        }
+        res.status(200).json(result[0]);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

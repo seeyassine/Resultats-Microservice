@@ -7,6 +7,8 @@ const app = express();
 // Middleware
 app.use(bodyParser.json());
 
+app.use(express.json()); // Middleware pour analyser le JSON
+
 // Routes
 app.use('/api/resultats', resultatsRoutes);
 
