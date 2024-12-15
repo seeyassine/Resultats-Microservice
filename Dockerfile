@@ -1,5 +1,5 @@
 # Use the official Node 20 image
-FROM node:20-alpine
+FROM node:20 as build
 
 # Set the working directory for your application inside the container
 WORKDIR /usr/src/app
