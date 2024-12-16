@@ -11,12 +11,24 @@ app.use(bodyParser.json());
 
 app.use(express.json()); // Middleware pour analyser le JSON
 
-// Use the healthcheck middleware to add a default health check route
-app.use('/health', healthcheck());
+// Health Check Route
+app.use('/health', healthcheck({
+    healthy: () => {
+        // Example advanced check
+        const databaseIsConnected = true; // Replace with real checks
+        return databaseIsConnected ? { status: 'Healthy' } : { status: 'Unhealthy' };
+    }
+}));
 
-// If you want more advanced checks, you can configure your health check middleware
-app.use('/health', healthcheck({ healthy: () => 'OK' }));
+// Error handling
+app.use((req, res, next) => {
+    res.status(404).json({ error: 'Route not found' });
+});
 
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'An unexpected error occurred' });
+});
 
 // Routes
 app.use('/api/resultats', resultatsRoutes);
