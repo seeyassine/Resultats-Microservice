@@ -1,40 +1,24 @@
 const express = require('express');
-const healthcheck = require('express-healthcheck');
-
-const bodyParser = require('body-parser');
-const resultatsRoutes = require('./routes/resul');
-
 const app = express();
+const resultRoutes = require('./routes/result.routes');
+const healthCheck = require('./utils/healthCheck');
+const errorHandler = require('./middleware/errorHandler');
 
 // Middleware
-app.use(bodyParser.json());
-
-app.use(express.json()); // Middleware pour analyser le JSON
-
-// Health Check Route
-app.use('/health', healthcheck({
-    healthy: () => {
-        // Example advanced check
-        const databaseIsConnected = true; // Replace with real checks
-        return databaseIsConnected ? { status: 'Healthy' } : { status: 'Unhealthy' };
-    }
-}));
-
-// Error handling
-app.use((req, res, next) => {
-    res.status(404).json({ error: 'Route not found' });
-});
-
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'An unexpected error occurred' });
-});
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use('/api/resultats', resultatsRoutes);
+app.use('/api/results', resultRoutes);
+app.get('/health', healthCheck);
 
-// Lancement du serveur
-const PORT = 3000;
+// Error handling middleware
+app.use(errorHandler);
+
+// Start the server
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Serveur démarré sur http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
+
+module.exports = app;
